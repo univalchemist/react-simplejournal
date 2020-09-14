@@ -1,0 +1,148 @@
+@import './style/base/base';
+@import './style/components/rating';
+@import './style/components/message';
+@import './style/components/list-item';
+@import './style/base/ui';
+
+.App {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(180deg, #B0B4BA 0%, #C6C6C8 34.03%, #CDC9C9 44.97%, #CCC1C1 62.15%, #C1B7BB 74.13%, #ABADB7 86.11%, #9AA4AC 99.13%);
+  display: flex;
+  flex-direction: column;
+}
+.bg-1 {
+  background: linear-gradient(180deg, #35394A 0%, #3B4057 47.16%, #1F202D 100%);
+}
+.bg-2 {
+  background: linear-gradient(180deg, #5563A9 0%, #5B669B 44.56%, #242B4C 100%);
+}
+.bg-3 {
+  background: linear-gradient(180deg, #7184E7 0%, #9CAFF6 49.77%, #8897C9 100%);
+}
+.bg-4 {
+  background: linear-gradient(180deg, #9984D5 0%, #E39DB2 49.25%, #E687A4 100%);
+}
+.bg-5 {
+  background: linear-gradient(180deg, #F57694 0%, #F7B189 62.67%, #FFD28F 99.65%);
+}
+.title {
+  position: absolute;
+  right: 26px;
+  top: 24px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 29px;
+  letter-spacing: -0.02em;
+  color: #F6F4F6;
+}
+.card-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  flex: 1;
+  padding-bottom: 20px;
+}
+.feeling-card {
+  width: 60%;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  background: #FCFBFC;
+  box-shadow: 0px 20px 100px 10px rgba(0, 0, 0, 0.12);
+  border-radius: 20px;
+}
+.card-bottom-container {
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #E1DCDC;
+}
+.month-info {
+  width: 100%;
+  padding: 15px 0;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.month-text {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px; 
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+.day-card-body {
+  height: 200px;
+  padding-top: 10px;
+  margin-right: 20px;
+  margin-left: 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: row-reverse;
+  -webkit-overflow-scrolling: touch;
+}
+.date-text {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  letter-spacing: -0.02em;
+  color: #959596;
+}
+.save-btn {
+  width: 130px;
+  height: 45px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 12px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  &:hover {
+    opacity: 50%;
+  }
+}
+.save-btn-1 {
+  border: 1px solid #353A4B;
+  color: #353A4B;
+}
+.save-btn-2 {
+  border: 1px solid #5563A9;
+  color: #5563A9;
+}
+.save-btn-3 {
+  border: 1px solid #7184E7;
+  color: #7184E7;
+}
+.save-btn-4 {
+  border: 1px solid #C788E6;
+  color: #C788E6;
+}
+.save-btn-5 {
+  border: 1px solid #F76789;
+  color: #F76789;
+}

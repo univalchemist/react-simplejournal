@@ -1,0 +1,19 @@
+.rating-message-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px;
+}
+.text-area {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 29px;
+  letter-spacing: -0.02em;
+  color: #333333;
+}

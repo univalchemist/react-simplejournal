@@ -1,0 +1,39 @@
+textarea::-webkit-input-placeholder {
+  color: #959596;
+}
+
+textarea:-moz-placeholder { /* Firefox 18- */
+  color:#959596;  
+}
+
+textarea::-moz-placeholder {  /* Firefox 19+ */
+  color:#959596;  
+}
+
+textarea:-ms-input-placeholder {
+  color:#959596;  
+}
+
+textarea::placeholder {
+  color:#959596;  
+}
+/* width */
+::-webkit-scrollbar {
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 40px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 1);
+}
