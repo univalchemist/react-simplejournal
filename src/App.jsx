@@ -1,15 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import moment from 'moment';
 import Rating from './components/rating';
 import Message from './components/message';
 import ListItem from './components/list-item';
-import { convertDate } from './utils/date';
+import { convertDate, convertSavedTime } from './utils/date';
 import './App.scss';
 
 function App() {
+  const scrollRef = useRef(null)
   const [dataList, setdataList] = useState([])
   const [selectedReport, setSelectedReport] = useState({})
   const [bottomDate, setBottomDate] = useState(moment().format('MMMM YYYY'))
+  const [scrollOffset, setScrollOffset] = useState(0)
+  const [focusIndex, setFocusIndex] = useState(0)
+  const [isChanged, setIsChanged] = useState(false)
 
   const backgroundStyle = useMemo(() => {
     if (selectedReport?.mark === 1) return 'bg-1'
@@ -17,7 +21,7 @@ function App() {
     if (selectedReport?.mark === 3) return 'bg-3'
     if (selectedReport?.mark === 4) return 'bg-4'
     if (selectedReport?.mark === 5) return 'bg-5'
-  }, [selectedReport?.mark])
+  }, [selectedReport])
 
   const saveBtnStyle = useMemo(() => {
     if (selectedReport?.mark === 1) return 'save-btn-1'
@@ -25,16 +29,25 @@ function App() {
     if (selectedReport?.mark === 3) return 'save-btn-3'
     if (selectedReport?.mark === 4) return 'save-btn-4'
     if (selectedReport?.mark === 5) return 'save-btn-5'
-  }, [selectedReport?.mark])
+  }, [selectedReport])
 
   const onSaveReport = useCallback(() => {
     if (Object.keys(selectedReport).length === 0) return;
     setdataList((dataList) => {
       const index = dataList.findIndex(d => moment(d.date).diff(selectedReport?.date, 'days') === 0)
       let _dataList = [...dataList]
-      _dataList[index] = selectedReport
+      const _selectedReport = {
+        ...selectedReport,
+        savedTime: moment()
+      }
+      _dataList[index] = _selectedReport
       return _dataList
     })
+    setSelectedReport({
+      ...selectedReport,
+      savedTime: moment()
+    })
+    setIsChanged(false)
   }, [selectedReport, setdataList])
 
   const initData = useCallback(async () => {
@@ -43,16 +56,15 @@ function App() {
     let _date = moment().format('YYYY-MM-DD')
     let _dataList = []
     for(let i = 0; i < 50; i++) {
-      const index = _localData.findIndex(d => {
-        return moment(_date).diff(d.date, 'days') === 0
-      })
+      const index = _localData.findIndex(d => moment(_date).diff(d.date, 'days') === 0)
       if (index > -1) {
         _dataList.push(_localData[index])
       } else {
         const dateReport = {
           date: _date,
           mark: null,
-          message: ''
+          message: '',
+          savedTime: null
         }
         _dataList.push(dateReport)
       }
@@ -63,16 +75,24 @@ function App() {
   }, [])
 
   const onScroll = useCallback(e => {
-    const index = Math.round((e.nativeEvent.target.scrollWidth - e.nativeEvent.target.scrollLeft) / 220)
-    if (index > dataList.length - 1) return
+    const target = e.nativeEvent.target
+    const index = Math.round((target.scrollWidth - target.scrollLeft - scrollOffset) / 220)
+    if (index > dataList.length - 1 || index < 0) return
     const focusItem = dataList[index]
     setBottomDate(moment(focusItem.date).format('MMMM YYYY'))
-  }, [dataList])
+    setFocusIndex(index)
+  }, [dataList, scrollOffset])
 
   // useEffect
   useEffect(() => {
     initData()
   }, [])
+
+  useEffect(() => {
+    if (scrollRef.current)  {
+      setScrollOffset(scrollRef.current.scrollWidth) // get scrollbar width
+    }
+  }, [scrollRef])
 
   useEffect(() => {
     const _dataToSave = dataList.filter(d => d.mark)
@@ -84,16 +104,31 @@ function App() {
       <div className="title">Simplejournal</div>
       <div className="card-container">
         <div className="feeling-card">
-          <Rating mark={selectedReport?.mark} setMark={mark => setSelectedReport({...selectedReport, mark })} />
-          <Message message={selectedReport?.message} setMessage={message => setSelectedReport({...selectedReport, message })} />
+          <Rating mark={selectedReport?.mark} setMark={mark => {
+            if (selectedReport.mark === mark) return
+            setSelectedReport({...selectedReport, mark })
+            setIsChanged(true)
+          }} />
+          <Message message={selectedReport?.message} setMessage={message => {
+            if (selectedReport.message === message) return
+            setSelectedReport({...selectedReport, message })
+            setIsChanged(true)
+          }} />
           <div className="card-bottom-container">
             {selectedReport?.date ? <div className="date-text">{convertDate(selectedReport?.date)}</div> : <div />}
-            {selectedReport?.mark ?  <div className={`save-btn ${saveBtnStyle}`} onClick={onSaveReport}>Save</div> : <div />}
+            {isChanged ?
+              <div className={`save-btn ${saveBtnStyle}`} onClick={onSaveReport}>Save</div>
+              : selectedReport?.savedTime ?
+              <div className="date-text">{convertSavedTime(selectedReport?.savedTime)}</div>
+              : <div />}
           </div>
         </div>
       </div>
-      <div className="day-card-body" onScroll={e => onScroll(e)}>
-        {dataList.map((data, index) => <ListItem key={index} data={data} onSelect={() => setSelectedReport(data)} />)}
+      <div className="day-card-body" ref={scrollRef} onScroll={e => onScroll(e)} >
+        {dataList.map((data, index) => <ListItem key={index} focusIndex={focusIndex} index={index} data={data} onSelect={() => {
+          setSelectedReport(data)
+          setIsChanged(false)
+        }} />)}
       </div>
       <div className="month-info">
         <div className="month-text">{`${bottomDate}`}</div>

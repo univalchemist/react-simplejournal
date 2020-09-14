@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { convertDate } from '../../utils/date';
 
-function ListItem({ data, onSelect }) {
+function ListItem({ data, onSelect, focusIndex, index }) {
   const { date, mark, message } = data
   const markStyle = useMemo(() => {
     switch(mark) {
@@ -20,8 +20,13 @@ function ListItem({ data, onSelect }) {
     }
   }, [mark])
 
+  const opacity = useMemo(() => {
+    let _opacity = 1 - (index - focusIndex) * 0.1
+    return Math.min(1, _opacity)
+  }, [focusIndex, index])
+
   return (
-    <div className="item-container">
+    <div className="item-container" style={{ opacity }}>
       <div className="item-content" onClick={onSelect}>
         <div className={`item-mark ${markStyle}`}>{mark}</div>
         <div className="item-date">{convertDate(date)}</div>

@@ -75,6 +75,8 @@
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
-  line-height: 18px;
   color: #666666;
+  line-height: 1.5em;
+  height: 3em;       /* height is 2x line-height, so two lines will display */
+  overflow: hidden;  /* prevents extra lines from being visible */
 }
