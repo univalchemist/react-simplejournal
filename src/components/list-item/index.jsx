@@ -1,7 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import { convertDate } from '../../utils/date';
 
 function ListItem({ data, onSelect, focusIndex, index }) {
+  const [showContent, setShowContent] = useState(false)
+
   const { date, mark, message } = data
   const markStyle = useMemo(() => {
     switch(mark) {
@@ -25,13 +28,27 @@ function ListItem({ data, onSelect, focusIndex, index }) {
     return Math.min(1, _opacity)
   }, [focusIndex, index])
 
+  // useEffect
+  useEffect(() => {
+    const timeOut = (index + 1) * 100
+    setTimeout(() => {
+      setShowContent(true)
+    }, timeOut)
+  }, [])
   return (
     <div className="item-container" style={{ opacity }}>
-      <div className="item-content" onClick={onSelect}>
-        <div className={`item-mark ${markStyle}`}>{mark}</div>
-        <div className="item-date">{convertDate(date)}</div>
-        <div className="item-message">{message}</div>
-      </div>
+      <CSSTransition
+        in={showContent}
+        timeout={300}
+        classNames="item"
+        unmountOnExit
+      >
+        <div className="item-content" onClick={onSelect}>
+          <div className={`item-mark ${markStyle}`}>{mark}</div>
+          <div className="item-date">{convertDate(date)}</div>
+          <div className="item-message">{message}</div>
+        </div>
+      </CSSTransition>
     </div>
   );
 }

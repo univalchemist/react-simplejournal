@@ -55,6 +55,9 @@
   box-shadow: 0px 20px 100px 10px rgba(0, 0, 0, 0.12);
   border-radius: 20px;
 }
+.empty-card {
+  visibility: hidden;
+}
 .card-bottom-container {
   margin-left: 20px;
   margin-right: 20px;
@@ -145,4 +148,26 @@
 .save-btn-5 {
   border: 1px solid #F76789;
   color: #F76789;
+}
+
+// Transition for selected card view
+.fade-enter .feeling-card {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.fade-enter-active .feeling-card {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.fade-exit .feeling-card {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.fade-exit-active .feeling-card {
+  opacity: 0;
+  transform: translateX(100%);
+}
+.fade-enter-active .feeling-card,
+.fade-exit-active .feeling-card {
+  transition: opacity 500ms, transform 500ms;
 }

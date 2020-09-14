@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { SwitchTransition, CSSTransition } from "react-transition-group";
 import moment from 'moment';
 import Rating from './components/rating';
 import Message from './components/message';
@@ -14,6 +15,7 @@ function App() {
   const [scrollOffset, setScrollOffset] = useState(0)
   const [focusIndex, setFocusIndex] = useState(0)
   const [isChanged, setIsChanged] = useState(false)
+  const [cardKey, setCardKey] = useState(null)
 
   const backgroundStyle = useMemo(() => {
     if (selectedReport?.mark === 1) return 'bg-1'
@@ -86,6 +88,7 @@ function App() {
   // useEffect
   useEffect(() => {
     initData()
+    setCardKey(moment().toISOString())
   }, [])
 
   useEffect(() => {
@@ -102,33 +105,54 @@ function App() {
   return (
     <div className={`App ${backgroundStyle}`}>
       <div className="title">Simplejournal</div>
-      <div className="card-container">
-        <div className="feeling-card">
-          <Rating mark={selectedReport?.mark} setMark={mark => {
-            if (selectedReport.mark === mark) return
-            setSelectedReport({...selectedReport, mark })
-            setIsChanged(true)
-          }} />
-          <Message message={selectedReport?.message} setMessage={message => {
-            if (selectedReport.message === message) return
-            setSelectedReport({...selectedReport, message })
-            setIsChanged(true)
-          }} />
-          <div className="card-bottom-container">
-            {selectedReport?.date ? <div className="date-text">{convertDate(selectedReport?.date)}</div> : <div />}
-            {isChanged ?
-              <div className={`save-btn ${saveBtnStyle}`} onClick={onSaveReport}>Save</div>
-              : selectedReport?.savedTime ?
-              <div className="date-text">{convertSavedTime(selectedReport?.savedTime)}</div>
-              : <div />}
-          </div>
-        </div>
-      </div>
+        <SwitchTransition mode={'out-in'}>
+          <CSSTransition
+            key={cardKey}
+            addEndListener={(node, done) => {
+              node.addEventListener("transitionend", done, false);
+            }}
+            classNames="fade"
+          >
+            <div className="card-container">
+              <div className={`feeling-card ${!cardKey && 'empty-card' }`}>
+                <Rating mark={selectedReport?.mark} setMark={mark => {
+                  if (selectedReport.mark === mark) return
+                  setSelectedReport({...selectedReport, mark })
+                  setIsChanged(true)
+                }} />
+                <Message message={selectedReport?.message} setMessage={message => {
+                  if (selectedReport.message === message) return
+                  setSelectedReport({...selectedReport, message })
+                  setIsChanged(true)
+                }} />
+                <div className="card-bottom-container">
+                  {selectedReport?.date ? <div className="date-text">{convertDate(selectedReport?.date)}</div> : <div />}
+                  {isChanged ?
+                    <div className={`save-btn ${saveBtnStyle}`} onClick={onSaveReport}>Save</div>
+                    : selectedReport?.savedTime ?
+                    <div className="date-text">{convertSavedTime(selectedReport?.savedTime)}</div>
+                    : <div />}
+                </div>
+              </div>
+            </div>
+          </CSSTransition>
+        </SwitchTransition>
       <div className="day-card-body" ref={scrollRef} onScroll={e => onScroll(e)} >
-        {dataList.map((data, index) => <ListItem key={index} focusIndex={focusIndex} index={index} data={data} onSelect={() => {
-          setSelectedReport(data)
-          setIsChanged(false)
-        }} />)}
+        {dataList.map((data, index) => (
+          <ListItem
+            key={index}
+            focusIndex={focusIndex}
+            index={index}
+            data={data}
+            onSelect={() => {
+              if (moment(selectedReport.date).diff(data.date, 'days') === 0) return
+              setSelectedReport(data)
+              setIsChanged(false)
+              console.log('===moment().toISOString()===', moment().toISOString())
+              setCardKey(moment().toISOString())
+            }}
+          />
+        ))}
       </div>
       <div className="month-info">
         <div className="month-text">{`${bottomDate}`}</div>
